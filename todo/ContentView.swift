@@ -1,26 +1,25 @@
-//
-//  ContentView.swift
-//  todo
-//
-//  Created by Geraldo Júnior on 04/12/22.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State var isLogged: Bool = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            if isLogged == true {
+                HomeView()
+            } else {
+                LoginView()
+            }
         }
-        .padding()
+        .onAppear{
+            isLogged = AuthService.isLoggedIn()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("goToHome"))) { output in
+            isLogged = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("goToLogin"))) { output in
+            isLogged = false
+        }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
